@@ -1,0 +1,13 @@
+name = "LockTracing"
+uuid = "2137ea62-2170-4057-967d-f3a18451cc98"
+authors = ["Ian Butterworth <i.r.butterworth@gmail.com>"]
+version = "0.1.0"
+
+[compat]
+julia = "1.11"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
