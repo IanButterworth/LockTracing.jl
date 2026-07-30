@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['*']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.threads }} thread(s)
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    continue-on-error: ${{ matrix.version == 'nightly' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - '1.11'   # basic mode only, deep mode unsupported
+          - '1.12'
+          - '1'      # latest release
+          - 'nightly'
+        os: [ubuntu-latest]
+        threads: [4]
+        include:
+          # a single-threaded run, since tracing must still work there
+          - version: '1'
+            os: ubuntu-latest
+            threads: 1
+          - version: '1'
+            os: macos-latest
+            threads: 4
+          - version: '1'
+            os: windows-latest
+            threads: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.version }}
+      - uses: julia-actions/cache@v2
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+        env:
+          JULIA_NUM_THREADS: ${{ matrix.threads }}

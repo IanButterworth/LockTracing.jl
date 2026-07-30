@@ -1,5 +1,7 @@
 # LockTracing.jl
 
+[![CI](https://github.com/IanButterworth/LockTracing.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/IanButterworth/LockTracing.jl/actions/workflows/CI.yml)
+
 Find out **where** your `ReentrantLock` conflicts happen.
 
 Base can already count lock conflicts with `Base.@lock_conflicts`, but a count doesn't
